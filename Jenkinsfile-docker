@@ -50,7 +50,7 @@ pipeline {
     stage('Run Docker Container') {
       agent { label 'controller' }
       steps {
-        sh 'docker container run --detach --name my-tomcat -p 80:8080 yuty1/myweb:latest'
+ 	ansiblePlaybook(playbook: 'docker-container-deploy.yaml')
       }
     }
   }
