@@ -10,7 +10,7 @@ pipeline {
         git branch: 'main', url: 'https://github.com/yuty11/source-maven-java-spring-hello-webapp.git'
       }
     }
-    stage('Build & Test') {
+    stage('Build') {
       agent {
         docker { image 'maven:3-openjdk-17' }
       }
@@ -21,21 +21,21 @@ pipeline {
     stage('Build Docker Image') {
       agent { label 'controller' }
       steps {
-        sh 'docker image build -t yuty/myweb:${BUILD_NUMBER} .'
+        sh 'docker image build -t yuty1/myweb:${BUILD_NUMBER} .'
       }
     }
     stage('Tag Docker Image') {
       agent { label 'controller' }
       steps {
-        sh 'docker image tag yuty/myweb:${BUILD_NUMBER} yuty/myweb:latest'
+        sh 'docker image tag yuty1/myweb:${BUILD_NUMBER} yuty1/myweb:latest'
       }
     }
     stage('Publish Docker Image') {
       agent { label 'controller' }
       steps {
         withDockerRegistry(credentialsId: 'docker-registry-credential', url: 'https://index.docker.io/v1/') {
-          sh 'docker image push yuty/myweb:${BUILD_NUMBER}'
-          sh 'docker image push yuty/myweb:latest'
+          sh 'docker image push yuty1/myweb:${BUILD_NUMBER}'
+          sh 'docker image push yuty1/myweb:latest'
         }
       }
     }
@@ -52,7 +52,7 @@ pipeline {
     stage('Run Docker Container') {
       agent { label 'controller' }
       steps {
-        sh 'docker container run --detach --name my-tomcat -p 80:8080 yuty/myweb:latest'
+        sh 'docker container run --detach --name my-tomcat -p 80:8080 yuty1/myweb:latest'
       }
     }
   }
